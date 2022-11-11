@@ -7,7 +7,7 @@ import java.util.Scanner;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
-public class Main {
+public class Programa1 {
     static Map<String, Integer> map = new LinkedHashMap<>();
 
     public static void main(String[] args) {
@@ -32,7 +32,11 @@ public class Main {
             palabra = sc.nextLine();
         }
         int ocurrencias = contarPalabras(palabra);
-        System.out.println("La palabra '" + palabra + "' aparece " + ocurrencias + " veces.");
+        if (ocurrencias > 0) {
+            System.out.println("La palabra '" + palabra + "' aparece " + ocurrencias + " veces.");
+        } else {
+            System.out.println("La palabra '" + palabra + "' no aparece. Prueba a escribirla sin tildes ni otros caracteres extraños");
+        }
 
         System.out.print("Introduce una palabra que sustituirá a la otra: ");
         String palabraSustituir;
@@ -56,6 +60,7 @@ public class Main {
                 String[] palabras = linea.split("\s");
                 for (String s : palabras) {
                     String p = Normalizer.normalize(s, Normalizer.Form.NFD).replaceAll("[^a-zA-Z]", "");
+                    if (p.isEmpty() || p.isBlank()) continue;
                     if (p.equalsIgnoreCase(palabra)) {
                         sb.append(palabraSustituir);
                     } else {
@@ -78,7 +83,7 @@ public class Main {
     }
 
     public static int contarPalabras(String palabra) {
-        if (!map.isEmpty()) {
+        if (!map.isEmpty() && map.containsKey(palabra)) {
             return map.get(palabra);
         } else {
             return 0;
@@ -92,6 +97,7 @@ public class Main {
                 String[] palabras = linea.split("\s");
                 for (String s : palabras) {
                     String p = Normalizer.normalize(s, Normalizer.Form.NFD).replaceAll("[^a-zA-Z]", "");
+                    if (p.isEmpty() || p.isBlank()) continue;
                     if (map.containsKey(p)) {
                         map.put(p, map.get(p) + 1);
                     } else {
