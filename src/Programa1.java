@@ -14,41 +14,42 @@ public class Programa1 {
         if (args.length > 3) {
             System.out.println("Usage: java -jar archivo.jar [ruta_archivo] [palabra_buscar] [palabra_reemplazar]");
             System.exit(1);
+            return;
         }
         Scanner sc = new Scanner(System.in);
-        System.out.print("Introduce la ruta del archivo: ");
         File file;
         if (args.length >= 1) {
             file = new File(args[0]);
         } else {
+            System.out.print("Introduce la ruta del archivo: ");
             file = new File(sc.nextLine());
         }
         contarPalabrasRepetidas(file);
-        System.out.print("Introduce la palabra a buscar: ");
         String palabra;
         if (args.length >= 2) {
             palabra = args[1];
         } else {
+            System.out.print("Introduce la palabra a buscar: ");
             palabra = sc.nextLine();
         }
+        palabra = Normalizer.normalize(palabra, Normalizer.Form.NFD).replaceAll("[^a-zA-Z]", "");
         int ocurrencias = contarPalabras(palabra);
         if (ocurrencias > 0) {
             System.out.println("La palabra '" + palabra + "' aparece " + ocurrencias + " veces.");
         } else {
-            System.out.println("La palabra '" + palabra + "' no aparece. Prueba a escribirla sin tildes ni otros caracteres extraños");
+            System.out.println("La palabra '" + palabra + "' no aparece.");
+            return;
         }
 
-        System.out.print("Introduce una palabra que sustituirá a la otra: ");
         String palabraSustituir;
         if (args.length == 3) {
             palabraSustituir = args[2];
         } else {
+            System.out.print("Introduce una palabra que sustituirá a la otra: ");
             palabraSustituir = sc.nextLine();
         }
 
-        if (ocurrencias > 0) {
-            sustituirPalabra(file, palabra, palabraSustituir);
-        }
+        sustituirPalabra(file, palabra, palabraSustituir);
     }
 
     public static void sustituirPalabra(File file, String palabra, String palabraSustituir) {
@@ -71,7 +72,7 @@ public class Programa1 {
                 sb.append(System.lineSeparator());
             }
         } catch (IOException e) {
-            e.printStackTrace();
+            System.out.println("Error al leer el archivo.");
         }
         try (BufferedWriter bw = new BufferedWriter(new FileWriter(nuevoArchivo))) {
             if (nuevoArchivo.delete() && nuevoArchivo.createNewFile()) System.gc();

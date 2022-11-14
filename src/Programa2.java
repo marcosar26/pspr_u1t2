@@ -1,4 +1,3 @@
-import java.awt.*;
 import java.io.*;
 import java.text.Normalizer;
 import java.util.*;
@@ -56,8 +55,9 @@ public class Programa2 {
         System.out.print("¿Desea abrir el archivo de log? (S/N): ");
         String respuesta = sc.next();
         if (respuesta.equalsIgnoreCase("S")) {
+            ProcessBuilder pb = new ProcessBuilder("notepad.exe", archivoLog.getAbsolutePath());
             try {
-                Desktop.getDesktop().open(archivoLog);
+                pb.start();
             } catch (IOException e) {
                 System.out.println("Error al abrir el archivo de log");
             }
@@ -174,8 +174,7 @@ public class Programa2 {
             System.out.println("El archivo no existe");
         }
         try (BufferedWriter bw = new BufferedWriter(new FileWriter(file))) {
-            file.delete();
-            file.createNewFile();
+            if (file.delete() && file.createNewFile()) System.gc();
             bw.write(sb.toString());
             bw.flush();
         } catch (IOException e) {
